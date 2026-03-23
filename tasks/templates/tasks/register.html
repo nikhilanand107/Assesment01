@@ -1,0 +1,130 @@
+{% extends 'tasks/base.html' %}
+
+{% block content %}
+
+<style>
+    body {
+        background: linear-gradient(135deg, var(--ice-cold), var(--medium-purple));
+    }
+
+    .register-card {
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.85);
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    input:focus {
+        border-color: var(--purple-pain);
+        box-shadow: 0 0 8px rgba(132, 88, 179, 0.4);
+        transition: 0.3s;
+    }
+
+    .register-btn {
+        background: var(--purple-pain);
+        border: none;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .register-btn:hover {
+        background: var(--heavy-purple);
+        transform: translateY(-3px) scale(1.03);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    .register-btn::after {
+        content: "";
+        position: absolute;
+        width: 300%;
+        height: 300%;
+        top: -100%;
+        left: -100%;
+        background: radial-gradient(circle, rgba(255,255,255,0.3) 10%, transparent 10%);
+        animation: shine 3s infinite linear;
+    }
+
+    @keyframes shine {
+        0% { transform: translate(0,0); }
+        100% { transform: translate(50%,50%); }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="col-md-5">
+
+        <div class="card register-card shadow-lg">
+
+            <div class="card-header text-white text-center" style="background: var(--purple-pain); border-radius: 20px 20px 0 0;">
+                <h3 class="mb-0">📝 Create Account</h3>
+            </div>
+
+            <div class="card-body p-4">
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <!-- Display Form Errors -->
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    <!-- Username -->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">👤</span>
+                        {{ form.username }}
+                    </div>
+
+                    <!-- Password -->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">🔒</span>
+                        {{ form.password1 }}
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">🔑</span>
+                        {{ form.password2 }}
+                    </div>
+
+                    <!-- Button -->
+                    <button class="btn register-btn w-100 text-white">
+                         Register
+                    </button>
+
+                </form>
+
+            </div>
+
+            <div class="card-footer text-center bg-white">
+                <p class="mb-0">
+                    Already have an account?
+                    <a href="{% url 'login' %}" style="color: var(--purple-pain); font-weight: bold;">
+                        Login
+                    </a>
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

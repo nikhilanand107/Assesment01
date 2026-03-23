@@ -1,0 +1,143 @@
+{% extends 'tasks/base.html' %}
+
+{% block content %}
+
+<style>
+    body {
+        background: linear-gradient(135deg, var(--ice-cold), var(--medium-purple));
+    }
+
+    .dashboard-card {
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .table thead {
+        background-color: var(--purple-pain);
+        color: white;
+    }
+
+    .table tbody tr {
+        transition: 0.3s;
+    }
+
+    .table tbody tr:hover {
+        background-color: var(--freeze-purple);
+        transform: scale(1.01);
+    }
+
+    /* Priority badges */
+    .priority-high {
+        background-color: #ff4d6d;
+    }
+
+    .priority-medium {
+        background-color: #ffc107;
+        color: black;
+    }
+
+    .priority-low {
+        background-color: #28a745;
+    }
+
+    /* Done task style */
+    .done-task {
+        text-decoration: line-through;
+        opacity: 0.6;
+    }
+
+    /* Buttons */
+    .btn-info {
+        background-color: var(--ice-cold);
+        border: none;
+    }
+
+    .btn-warning {
+        background-color: var(--medium-purple);
+        border: none;
+    }
+
+    .btn-info:hover,
+    .btn-warning:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="container mt-4">
+
+    <!-- Title -->
+    <h2 class="text-center mb-4 text-dark fw-bold">📋 Your Tasks</h2>
+
+    <!-- Card Wrapper -->
+    <div class="card dashboard-card shadow-lg p-3">
+
+        <table class="table align-middle text-center">
+
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Due Date</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for task in tasks %}
+                <tr class="{% if task.status == 'Done' %}done-task{% endif %}">
+                    
+                    <td class="fw-semibold">{{ task.title }}</td>
+                    <td>{{ task.due_date }}</td>
+
+                    <td>
+                        <span class="badge px-3 py-2 
+                            {% if task.priority == 'High' %}priority-high
+                            {% elif task.priority == 'Medium' %}priority-medium
+                            {% else %}priority-low
+                            {% endif %}">
+                            {{ task.priority }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="badge bg-dark px-3 py-2">
+                            {{ task.status }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <a href="{% url 'task_detail' task.id %}" class="btn btn-info btn-sm">
+                            👁 View
+                        </a>
+
+                        <a href="{% url 'edit_task' task.id %}" class="btn btn-warning btn-sm">
+                            ✏ Edit
+                        </a>
+                    </td>
+
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-muted">
+                         No tasks found. Start by adding one!
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
